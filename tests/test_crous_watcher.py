@@ -2,7 +2,15 @@ import json
 import unittest
 from unittest.mock import patch
 
-from crous_watcher import SearchResultParser, accommodation_id, accommodation_label, read_env_value, save_seen, telegram_chat_id
+from crous_watcher import (
+    SearchResultParser,
+    accommodation_id,
+    accommodation_label,
+    check_once,
+    read_env_value,
+    save_seen,
+    telegram_chat_id,
+)
 
 
 class CrousWatcherTests(unittest.TestCase):
@@ -42,6 +50,18 @@ class CrousWatcherTests(unittest.TestCase):
             state = Path(directory) / "seen.json"
             self.assertTrue(save_seen(state, {"id:1"}))
             self.assertFalse(save_seen(state, {"id:1"}))
+
+    @patch("crous_watcher.send_telegram_notification")
+    @patch("crous_watcher.fetch_search_results", return_value=[])
+    def test_sends_telegram_status_when_no_housing_is_found(self, _fetch, send_notification):
+        from tempfile import TemporaryDirectory
+        from pathlib import Path
+
+        with TemporaryDirectory() as directory:
+            check_once("https://example.test/search", Path(directory) / "seen.json")
+
+        send_notification.assert_called_once()
+        self.assertIn("Aucun logement", send_notification.call_args.args[1])
 
 
 if __name__ == "__main__":
