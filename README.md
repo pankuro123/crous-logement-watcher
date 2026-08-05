@@ -6,7 +6,7 @@ lorsqu'un nouveau logement apparaît. Il ne se connecte pas au compte CROUS et
 ne réserve jamais automatiquement un logement.
 
 Quand aucun logement n'est visible, il envoie aussi un message Telegram de
-confirmation à chaque vérification (toutes les cinq minutes avec GitHub Actions).
+confirmation à chaque vérification (toutes les douze heures avec GitHub Actions).
 
 ## Lancer une vérification
 
@@ -53,7 +53,7 @@ python .\crous_watcher.py --test-notification
 ## Exécution gratuite sur GitHub
 
 Le dépôt contient une tâche GitHub Actions qui exécute une vérification toutes
-les cinq minutes. Dans les réglages du dépôt GitHub, ajoute le secret suivant :
+les douze heures. Dans les réglages du dépôt GitHub, ajoute le secret suivant :
 
 ```text
 TELEGRAM_BOT_TOKEN
