@@ -5,6 +5,9 @@ Il mémorise les offres déjà présentes, puis envoie une notification Telegram
 lorsqu'un nouveau logement apparaît. Il ne se connecte pas au compte CROUS et
 ne réserve jamais automatiquement un logement.
 
+Quand aucun logement n'est visible, il envoie aussi un message Telegram de
+confirmation à chaque vérification (toutes les cinq minutes avec GitHub Actions).
+
 ## Lancer une vérification
 
 ```powershell
