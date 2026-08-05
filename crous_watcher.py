@@ -225,6 +225,16 @@ def check_once(url: str, state_path: Path) -> int:
     previous_ids = load_seen(state_path)
 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    if not items:
+        send_telegram_notification(
+            "Vérification logement CROUS",
+            "Aucun logement n'est disponible dans la zone surveillée pour le moment.",
+            url,
+        )
+        save_seen(state_path, current_ids)
+        print(f"[{timestamp}] Aucun logement visible. Notification Telegram envoyée.")
+        return 0
+
     if previous_ids is None:
         save_seen(state_path, current_ids)
         print(f"[{timestamp}] Initialisation : {len(items)} logement(s) visible(s).")
