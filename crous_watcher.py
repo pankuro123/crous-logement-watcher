@@ -193,7 +193,14 @@ def telegram_api(method: str, payload: dict[str, Any]) -> Any:
 
 
 def telegram_chat_id() -> int:
-    """Trouve le dernier chat privé ayant écrit au bot."""
+    """Utilise le chat_id enregistré, sinon cherche un message récent du bot."""
+    configured_chat_id = read_env_value("TELEGRAM_CHAT_ID")
+    if configured_chat_id:
+        try:
+            return int(configured_chat_id)
+        except ValueError as error:
+            raise RuntimeError("TELEGRAM_CHAT_ID doit être un nombre entier.") from error
+
     updates = telegram_api("getUpdates", {})
     if not isinstance(updates, list):
         raise RuntimeError("Réponse Telegram inattendue.")
@@ -204,7 +211,7 @@ def telegram_chat_id() -> int:
         chat = message.get("chat") if isinstance(message, dict) else None
         if isinstance(chat, dict) and chat.get("type") == "private" and isinstance(chat.get("id"), int):
             return chat["id"]
-    raise RuntimeError("Ouvre le bot Telegram, appuie sur Démarrer et envoie-lui « Bonjour », puis réessaie.")
+    raise RuntimeError("TELEGRAM_CHAT_ID est absent : ouvre le bot Telegram, appuie sur Démarrer et envoie-lui « Bonjour », puis réessaie.")
 
 
 def send_telegram_notification(title: str, message: str, url: str) -> None:
